@@ -43,3 +43,12 @@ function addHistory (url){
     stmt.run(url); 
     stmt.finalize(); 
 }
+
+// funcion para obtener el historial 
+function getHistory(limit = 100, cb ){
+    if (!db ) return db ([]);
+    db.all ('SELECT * FROM history  ORDER BY  visited_at DESC  LIMIT ? ',  [limit ], (err,  rows )  => {
+            if (err)  return cb ([]);
+            cb (rows);
+     });
+}
