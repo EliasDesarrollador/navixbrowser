@@ -150,4 +150,11 @@ ipcMain.handle('navigate', (_,url) => {
     createTab ('htpps://www.google.com');
     
 
- }
+    // en MacOS  se crea  ventana  si no hay  niguna  y la app  vuelve  activarse 
+    app.on('activate' , () => {
+         if (BrowserWindow.getAllWindows().length === 0 )  createWindow();
+    });
+});
+
+// cuando cierran  todas las ventanas , salir (excepto en MacOS )
+app.on(process.platform !== 'darwin' )  app.quit();
