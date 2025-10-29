@@ -35,3 +35,11 @@ function init(){
         console.log('Base de datos creada en ', DB_PATH);
     }
 }
+
+// funcion para anadir una entrada al historial 
+function addHistory (url){
+    if (!db) return; 
+    const stmt = db.prepare('INSERT INTO history(url)  VULUES (?)');
+    stmt.run(url); 
+    stmt.finalize(); 
+}
