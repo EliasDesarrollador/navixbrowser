@@ -76,3 +76,12 @@ view.webContents.on ('page-title-updated', (_, title) => {
 switchTab(views.length -1);
 return views.length -1 ; // devuelve el indice de la nueva pestana
 }
+
+// cambia a la pestana indicada por indice
+function switchTab(index){
+    if (index < 0 || index >= views.length) return; // indice invalido
+    // primero escondemos todos los browserViews
+    views.forEach((v , i ) => {
+        mainWindow.removeBrowserView(v.view);
+    });
+}
