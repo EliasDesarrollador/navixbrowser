@@ -21,8 +21,20 @@ function createWindow(){
         }
     });
 
+    mainWindow.loadFile(path.join(__dirname, 'renderer','index.html')) // Carga la UI 
+    // Cuando la ventana se cierra la app se cierra
+    mainWindow.on ('closed', () => {
+        mainWindow = null; // Limpia referencia a ventana
+    });
+}
 
-
-
-
+// Creamos una nueva pestana usando BrowserView
+function createTab(url = 'https://www.google.com'){
+    const view = new BrowserView({
+        webPreferences: {
+            nodeIntegration: false, //seguridad
+            contextIsolation: true, 
+            sainbox: true
+        }
+    });
 }
