@@ -84,4 +84,14 @@ function switchTab(index){
     views.forEach((v , i ) => {
         mainWindow.removeBrowserView(v.view);
     });
+
+   // luego añadimos solo la pestaña activa  
+   const active  = views[index].view;
+   mainWindowa.addBrowserView(active);
+   const [w, h] = mainWindow.getContentSize();
+   active.setBounds({x: 0, y:40. ,width: w , height: h -40});
+   active.setAutoResize({width:true, height:true});
+
+   activeIndex = index; //actualiza indice activo 
+   
 }
