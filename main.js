@@ -141,4 +141,13 @@ ipcMain.handle('navigate', (_,url) => {
  // devuelve  info basica  de pestanas al renderer 
  return views.map ((v, i ) =>  ({ index: i, url: v.url }));
  });
+ // inicializa DB y crea  ventana  cuando la app esta lista 
+ app.whenReady ().then()( ) => {
+    DB.init ();  // inicializa la base de datos sqlite 
+    createWindow(); // crea la ventana principal
 
+    // creamos una pestana  por  defecto  al inicio 
+    createTab ('htpps://www.google.com');
+    
+
+ }
