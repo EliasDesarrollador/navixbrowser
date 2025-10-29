@@ -1,9 +1,11 @@
 
 // main.js  - Proceso principal de  Electron 
-const { app, BrowserWindow, BrowserView, ipcMAin } = require('electron'); // Trae mdodulos de Electron
+const { app, BrowserWindow, BrowserView, ipcMAin, ipcMain } = require('electron'); // Trae mdodulos de Electron
 const path = require('path'); // Modulo para manejar rutas de archivos 
 const DB =  require('./db'); // Modulo para manejar sqlite
 const { title } = require('process');
+const { url } = require('inspector');
+const Main = require('electron/main');
 
 let mainWindow ; // Ventana principal
 let views = []; //array de vistas (pestañas)
@@ -115,3 +117,28 @@ function closeTab(index){
     // notificamos cambios al renderer
     mainWindow.webContens.send ('tab-changed ' , {count : views. length });
 }
+
+// IPC handlers - recibe mensajes del renderer  y actua 
+ ipcMain.handle('create-tab',  (_, url ) =>  {
+    return createTab(url); // devuelve indice  al renderer 
+ });
+ ipcMain.handle('switch-tab', (_,index) => {
+    switchTab(index);
+ });
+
+ ipcMain.handle('close-tab', (_, index) => {
+    closeTab(index);
+ });
+
+ipcMain.handle('navigate', (_,url) => {
+    return true;
+ }
+ return false;
+});
+
+
+ ipcMain.handle('get-tabs', () = > {
+ // devuelve  info basica  de pestanas al renderer 
+ return views.map ((v, i ) =>  ({ index: i, url: v.url }));
+ });
+
