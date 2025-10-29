@@ -21,4 +21,17 @@ function init(){
                   visiteda_at DATABASE DEFAULT  CURRENT_TIMESTAMP
         )''
     }); 
-    
+    db .run ('
+        CREATE TABLE IF NOT  EXISTS  bookmarks (
+            id INTEGER PRIMARY KEY  AUTOINCRMENT, 
+             title TEXT NOT NULL , 
+             created_at DATETIME DEAULT  CURRENT_TIMESTAMP 
+        )
+        ');
+    });
+
+
+    if ( firstTime){
+        console.log('Base de datos creada en ', DB_PATH);
+    }
+}
