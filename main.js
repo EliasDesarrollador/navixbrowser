@@ -72,3 +72,7 @@ view.webContents.on ('page-title-updated', (_, title) => {
     }
 });
 
+//activa la pestana creada 
+switchTab(views.length -1);
+return views.length -1 ; // devuelve el indice de la nueva pestana
+}
