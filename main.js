@@ -96,5 +96,22 @@ function switchTab(index){
 
    // notificamos al renderer  cual esta activa 
    mainWindow.webContens.send('active-tab', {index: activeIndex, url: views[index].url});
-
+}
+ 
+// Cierra una pestana 
+function closeTab(index){
+    if (index < 0  || index  >=  views.length) return; 
+    const item = views [index];
+    mainWindow.removeBrowserView(item.view); // remueve la lista de vistas 
+    item.view.webContents.destroy(); // libera recursos
+    views.splice(index, 1);  // remueve del array 
+    // ajusta  active Index
+    if (views .length  === 0 ) { 
+        activeIndex = -1 ; 
+    } else { 
+        const next  = Math.max(0, index - 1 );
+        switchTab(next);
+    }
+    // notificamos cambios al renderer
+    mainWindow.webContens.send ('tab-changed ' , {count : views. length });
 }
