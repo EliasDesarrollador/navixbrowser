@@ -1,0 +1,25 @@
+{
+  "name": "navix",
+  "version": "0.1.0",
+  "description": "Navix - Navegador hecho con Electron",
+  "main": "main.js",           
+  "scripts": {
+    "start": "electron .",   
+    "dist": "electron-builder"
+  },
+  "build": {
+    "appId": "com.navix.app",  
+    "productName": "Navix",
+    "files": ["**/*"],         
+    "win": { "target": "nsis" },
+    "mac": { "target": "dmg" },
+    "linux": { "target": ["AppImage","deb"] }
+  },
+  "dependencies": {
+    "electron": "^26.0.0",
+    "sqlite3": "^5.1.6"
+  },
+  "devDependencies": {
+    "electron-builder": "^24.0.0"
+  }
+}

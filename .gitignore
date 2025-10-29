@@ -1,0 +1,21 @@
+# Dependencias de Node
+node_modules/
+
+# Builds del instalador o ejecutables generados
+dist/
+out/
+build/
+
+# Archivos temporales
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
+
+# Configs de editor
+.vscode/
+.idea/
