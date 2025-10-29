@@ -58,8 +58,17 @@ function createTab(url = 'https://www.google.com'){
         if (idx !== -1 ){
             views[idx].url = newUrl;   // actualiza URL interna
             // notifica renderer con IPC 
-            mainWindow.webContents.send('tab-updated', {index.idx, url:newURL});
+            mainWindow.webContents.send('tab-updated', {index: idx, url:newURL});
             //guarda el historial en la DB 
             DB.addHistory(newURL);
         }
 });
+
+// cuando cambia titulo , notificaciones  al renderer para actualizar la pestana
+view.webContents.on ('page-title-updated', (_, title) => {
+    const idx = views.findIndex( v = >  v.view ===view);
+    if (idx !==  -1 ){
+        mainWindow.webContens.send('tab-updated', {index: idx, title});
+    }
+});
+
