@@ -93,5 +93,8 @@ function switchTab(index){
    active.setAutoResize({width:true, height:true});
 
    activeIndex = index; //actualiza indice activo 
-   
+
+   // notificamos al renderer  cual esta activa 
+   mainWindow.webContens.send('active-tab', {index: activeIndex, url: views[index].url});
+
 }
