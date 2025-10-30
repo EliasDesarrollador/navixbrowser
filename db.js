@@ -72,3 +72,13 @@ function addBookmark (title, url , cb ){
         cb(rows);
     }); 
  }
+
+ module.exports = {
+    init,
+    addHistory, 
+    getHistory,
+    addBookmark, 
+    getBookmark
+ }; 
+
+ 
