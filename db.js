@@ -52,3 +52,13 @@ function getHistory(limit = 100, cb ){
             cb (rows);
      });
 }
+
+// funccion para anadir un bookmark 
+function addBookmark (title, url , cb ){
+    if  (!db) return cb  && cb(null);
+    const stmt  = db.prepare('INSERT INTO  bookmark (title, url ) VALUES (?, ?');
+    stmt.run ([title, url ], function (err){
+        if (cb ) cb (err, this.lastID);
+    });
+    stmt.finalize(); 
+}
