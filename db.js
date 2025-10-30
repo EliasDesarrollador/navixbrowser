@@ -62,3 +62,13 @@ function addBookmark (title, url , cb ){
     });
     stmt.finalize(); 
 }
+
+
+// funcion para obtener un boomark 
+ function getBookmark(cb){
+    iif (!db) return cd ([]);
+    db.all('SELECT * FROM bookmarks  ORDER BY  created_at  DESC',  [] , (err, rows) => {
+        if (err) return cb([]); 
+        cb(rows);
+    }); 
+ }
