@@ -1,0 +1,30 @@
+<!-- renderer/index.html - interfaz principal -->
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self' https: data:;">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Navix</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Barra superior: botones y barra de direcciones -->
+  <div id="topbar">
+    <button id="btn-new">+ pestaña</button>
+    <input id="address" placeholder="Ingresá una URL y Enter" />
+    <button id="btn-go">Ir</button>
+  </div>
+
+  <!-- Titulo con pestañas -->
+  <div id="tabs"></div>
+
+  <!-- Área de contenido se gestiona por BrowserView en main, aquí sólo control visual -->
+  <div id="content-placeholder">
+    <!-- Contenido real se renderiza en BrowserView que crea main.js -->
+    <p class="hint">La página web se muestra en el área debajo. Usá la barra para navegar.</p>
+  </div>
+
+  <script src="renderer.js"></script>
+</body>
+</html>

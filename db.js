@@ -72,7 +72,7 @@ function addBookmark (title, url , cb ){
         cb(rows);
     }); 
  }
-
+// exportar las funciones 
  module.exports = {
     init,
     addHistory, 
@@ -81,4 +81,3 @@ function addBookmark (title, url , cb ){
     getBookmark
  }; 
 
- 
