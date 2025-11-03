@@ -12,7 +12,7 @@ function renderTabs(){
     tabsDiv.innerHTML = ''; // limpiar contenedor
     tabs.forEach(t => {
         const btn = document.createElement('button');
-        btn.textContent = t.url.replace((/(^\w+:|^)\/\//, '').slice(0, 20); // mostrar URL corta
+        btn.textContent = t.url.replace(/(^\w+:|^)\/\//, '').slice(0, 20) ;  // mostrar URL corta
        btn.onclick = () => {
         window.navixAPI.switchTab(t.index); // pide al main  que cambie la pestana 
     };
@@ -38,3 +38,14 @@ function renderTabs(){
     tabs = list;
     renderTabs(); 
  }
+
+ //navegacion al presionar Enter o boton ir 
+  async function  navigate() {
+    const urlText = address.value.trim();
+    if (!urlText) return ;
+    // si el texto no tiene esquema , asumimos https
+    const url = urlText.match(/^https?:\/\//) ? urlText : `https://${urlText}`;
+    await window.navixAPI.navigate(url); // pide al main  navegar la pestana  activa 
+  }
+
+  
