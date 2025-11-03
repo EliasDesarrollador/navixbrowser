@@ -1,2 +1,2 @@
 # navixbrowser
-Navegador web escrito en Javascript
+Navegador web de códigos abierto escrito en Javascript 
