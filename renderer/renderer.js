@@ -53,3 +53,14 @@ btnGo.addEventListener('click', navigate);
 address.addEventListener('keydown',  (e) => {
     if (e.key === 'Enter') navigate();
 });
+
+btn.New.addEventListener('click', () => newTab('https://www.google.com'));
+
+// escucha  eventos  desde main para  sincronizar  UI 
+window.navixAPI.on('tabs-changed', (data) =>  {
+    // simple  re-sincronizacion
+    window.navixAPI.getTabs().then (list => {
+        tabs = list; 
+        renderTabs(); 
+    });
+});
