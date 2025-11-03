@@ -12,6 +12,19 @@ function renderTab(){
     tabsDiv.innerHTML = ''; // limpiar contenedor
     tabs.forEach(t => {
         const btn = document.createElement('button');
-        
-    })
+        btn.textContent = t.url.replace((/(^\w+:|^)\/\//, '').slice(0, 20); // mostrar URL corta
+    btn.onclick = () => {
+        window.navixAPI.switchTab(t.index); // pide al main  que cambie la pestana 
+    };
+     const  close = document.createElement('span');
+     close.textContent = 'x';
+     close.style.margineLeft = '6px';
+     close.onclick = (e) => {
+        e.stopPropagation(); // evitar disparar el onclick del boton
+         window.navixAPI.closeTab(t.index);  //  pide cierre  de pestana 
+         // actualizar  UI localmente  sera hecho  por evento  'tabs-changed enviado desde main 
+     };
+      btn.appendChild(close); 
+      tabsDiv.appendChild(btn);
+    });
 }
