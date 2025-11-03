@@ -48,4 +48,8 @@ function renderTabs(){
     await window.navixAPI.navigate(url); // pide al main  navegar la pestana  activa 
   }
 
-  
+// eventos UI 
+btnGo.addEventListener('click', navigate);
+address.addEventListener('keydown',  (e) => {
+    if (e.key === 'Enter') navigate();
+});
