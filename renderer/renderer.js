@@ -8,12 +8,12 @@ const tabsDiv = document.getElementById('tabs'); // contenedor de pestañas
 let tabs = [] ; // info local  de pestanas 
 
 // funcion para renderizar las pestanas  de  la UI  
-function renderTab(){
+function renderTabs(){
     tabsDiv.innerHTML = ''; // limpiar contenedor
     tabs.forEach(t => {
         const btn = document.createElement('button');
         btn.textContent = t.url.replace((/(^\w+:|^)\/\//, '').slice(0, 20); // mostrar URL corta
-    btn.onclick = () => {
+       btn.onclick = () => {
         window.navixAPI.switchTab(t.index); // pide al main  que cambie la pestana 
     };
      const  close = document.createElement('span');
@@ -28,3 +28,13 @@ function renderTab(){
       tabsDiv.appendChild(btn);
     });
 }
+
+ // crear nueva pestana  con la URL  del input  o con google  si esta  vacia 
+ async function  newTab(url) {
+    const actualUrl = url || 'htpps://www.googe.com';
+    const index = await  window.navixAPI.createTab(actualUrl); //crea pestana en main y devuelve indice
+    // Luego pedimos  la lista  de pestanas  para sincronizar UI
+    const list = await window.navixAPI.getTabs();
+    tabs = list;
+    renderTabs(); 
+ }
