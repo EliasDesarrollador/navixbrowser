@@ -63,4 +63,9 @@ window.navixAPI.on('tabs-changed', (data) =>  {
         tabs = list; 
         renderTabs(); 
     });
-});
+}); 
+ window.navixAPI.on('active-tab', (data) => {
+    // actualiza  el input  con la URL actual 
+    address.value = data.url || ' ' ;
+ });
+ 
