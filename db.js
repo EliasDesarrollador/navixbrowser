@@ -1,83 +1,92 @@
 
-// db.js - simple  wrapper  para SQLIte  ( historial y bookmarks )
+// db.js - Wrapper simple para SQLite (historial y bookmarks)
+
+// Importamos módulos de Node
 const path = require('path');
 const fs = require('fs');
-const sqlite3 = require('sqlite3').verbose(); 
+const sqlite3 = require('sqlite3').verbose();
 
+// Definimos la ruta de la base de datos
+const DB_PATH = path.join(__dirname, 'navix.sqlite');
+let db = null;
 
-const DB_PATH   = path.join(__dirname, 'naviix.sqlite'); // archivo de DB 
-let db =  null; 
+// Inicializa la base de datos
+function init() {
+  const firstTime = !fs.existsSync(DB_PATH); // Si no existe, la creamos
+  db = new sqlite3.Database(DB_PATH);
 
-function init(){
-    const firstTime = !fs.existsSync(DB_PATH); //  si no existe , lo creamos 
-    db = new sqlite3.Database(DB_PATH);
+  // Creamos las tablas si no existen
+  db.serialize(() => {
+    // Tabla del historial
+    db.run(`
+      CREATE TABLE IF NOT EXISTS history (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        url TEXT NOT NULL,
+        visited_at DATETIME DEFAULT CURRENT_TIMESTAMP
+      )
+    `);
 
-    // crear tablas  si no existen 
-    db.serializa(() => {
-        db.run(
-            'CREATE TABLE IF NOT EXISTS  history (
-                  id  INTEGER  PRIMARY KEY AUTOINCREMENT , 
-                  url  TEXT NOT NULL , 
-                  visiteda_at DATABASE DEFAULT  CURRENT_TIMESTAMP
-        )''
-    }); 
-    db .run ('
-        CREATE TABLE IF NOT  EXISTS  bookmarks (
-            id INTEGER PRIMARY KEY  AUTOINCRMENT, 
-             title TEXT NOT NULL , 
-             created_at DATETIME DEAULT  CURRENT_TIMESTAMP 
-        )
-        ');
-    });
+    // Tabla de marcadores
+    db.run(`
+      CREATE TABLE IF NOT EXISTS bookmarks (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        title TEXT NOT NULL,
+        url TEXT NOT NULL,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+      )
+    `);
+  });
 
+  if (firstTime) {
+    console.log('📂 Base de datos creada en:', DB_PATH);
+  }
+}
 
-    if ( firstTime){
-        console.log('Base de datos creada en ', DB_PATH);
+// Función para añadir una entrada al historial
+function addHistory(url) {
+  if (!db) return;
+  const stmt = db.prepare('INSERT INTO history(url) VALUES (?)');
+  stmt.run(url);
+  stmt.finalize();
+}
+
+// Función para obtener el historial
+function getHistory(limit = 100, cb) {
+  if (!db) return cb([]);
+  db.all(
+    'SELECT * FROM history ORDER BY visited_at DESC LIMIT ?',
+    [limit],
+    (err, rows) => {
+      if (err) return cb([]);
+      cb(rows);
     }
+  );
 }
 
-// funcion para anadir una entrada al historial 
-function addHistory (url){
-    if (!db) return; 
-    const stmt = db.prepare('INSERT INTO history(url)  VULUES (?)');
-    stmt.run(url); 
-    stmt.finalize(); 
+// Función para añadir un marcador
+function addBookmark(title, url, cb) {
+  if (!db) return cb && cb(null);
+  const stmt = db.prepare('INSERT INTO bookmarks (title, url) VALUES (?, ?)');
+  stmt.run([title, url], function (err) {
+    if (cb) cb(err, this.lastID);
+  });
+  stmt.finalize();
 }
 
-// funcion para obtener el historial 
-function getHistory(limit = 100, cb ){
-    if (!db ) return db ([]);
-    db.all ('SELECT * FROM history  ORDER BY  visited_at DESC  LIMIT ? ',  [limit ], (err,  rows )  => {
-            if (err)  return cb ([]);
-            cb (rows);
-     });
+// Función para obtener los marcadores
+function getBookmarks(cb) {
+  if (!db) return cb([]);
+  db.all('SELECT * FROM bookmarks ORDER BY created_at DESC', [], (err, rows) => {
+    if (err) return cb([]);
+    cb(rows);
+  });
 }
 
-// funccion para anadir un bookmark 
-function addBookmark (title, url , cb ){
-    if  (!db) return cb  && cb(null);
-    const stmt  = db.prepare('INSERT INTO  bookmark (title, url ) VALUES (?, ?');
-    stmt.run ([title, url ], function (err){
-        if (cb ) cb (err, this.lastID);
-    });
-    stmt.finalize(); 
-}
-
-
-// funcion para obtener un boomark 
- function getBookmark(cb){
-    iif (!db) return cd ([]);
-    db.all('SELECT * FROM bookmarks  ORDER BY  created_at  DESC',  [] , (err, rows) => {
-        if (err) return cb([]); 
-        cb(rows);
-    }); 
- }
-// exportar las funciones 
- module.exports = {
-    init,
-    addHistory, 
-    getHistory,
-    addBookmark, 
-    getBookmark
- }; 
-
+// Exportamos las funciones
+module.exports = {
+  init,
+  addHistory,
+  getHistory,
+  addBookmark,
+  getBookmarks,
+};

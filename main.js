@@ -1,160 +1,146 @@
+// main.js - Proceso principal de Electron
 
-// main.js  - Proceso principal de  Electron 
-const { app, BrowserWindow, BrowserView, ipcMAin, ipcMain } = require('electron'); // Trae mdodulos de Electron
-const path = require('path'); // Modulo para manejar rutas de archivos 
-const DB =  require('./db'); // Modulo para manejar sqlite
-const { title } = require('process');
-const { url } = require('inspector');
-const Main = require('electron/main');
+const { app, BrowserWindow, BrowserView, ipcMain } = require('electron'); // módulos principales de Electron
+const path = require('path'); // módulo para rutas de archivos
+const DB = require('./db'); // módulo para manejar sqlite
 
-let mainWindow ; // Ventana principal
-let views = []; //array de vistas (pestañas)
-let activeIndex = 0 ; // indice de la vista activa
+let mainWindow; // Ventana principal
+let views = []; // Array de pestañas
+let activeIndex = 0; // Índice de pestaña activa
 
-// Funcion para crear la ventana principal
-function createWindow(){
-    mainWindow = new BrowserWindow({
-        width: 1200,  // ancho nicial
-        height: 800, // alto inicial
-        webPreferences{
-            preload: path.join(__dirname, 'preload.js'), // carga preload.js  para exponer API segura
-            contexIsolation: true , // Aisla contexto (seguridad)
-            nodeIntegratio: false , // evita node en renderer (seguridad)
-            sanbox: true // habilita sandbox (seguridad)
-        }
-    });
-
-    mainWindow.loadFile(path.join(__dirname, 'renderer','index.html')) // Carga la UI 
-    // Cuando la ventana se cierra la app se cierra
-    mainWindow.on ('closed', () => {
-        mainWindow = null; // Limpia referencia a ventana
-    });
-}
-
-// Creamos una nueva pestana usando BrowserView
-function createTab(url = 'https://www.google.com'){
-    const view = new BrowserView({
-        webPreferences: {
-            nodeIntegration: false, //seguridad
-            contextIsolation: true, 
-            sainbox: true
-        }
-    });
-    //Guarda metadatos de la pestana 
-    views.push({view, url});
-
-    // anade la vista a la ventana principal
-    mainWindow.addBrowserView(view);
-
-    // Fija la posicion  y tamaño del browser view debajo  de la barra de navegacion (y 40 px  de alto  para la barra )
-    const [w,h] = mainWindow.getContentSize();
-    view.setBounds({x: 0 , y: 40,  width: w, height: h -40});
-    view.setAutoResize({width: true, height:true});
-
-    // Carga la URL inicial 
-    view.webContents.loadURL(url);
-    
-    // cuando cambia la url , avisamos al renderer y guardamos en historial
-    view.webContents.on('did-navigate-in-page  ', (event, url) => {
-        const idx = views.findIndex(v => v.view === view);
-        if (idx !== -1 ){
-            views[idx].url = newUrl;   // actualiza URL interna
-            // notifica renderer con IPC 
-            mainWindow.webContents.send('tab-updated', {index: idx, url:newURL});
-            //guarda el historial en la DB 
-            DB.addHistory(newURL);
-        }
-});
-
-// cuando cambia titulo , notificaciones  al renderer para actualizar la pestana
-view.webContents.on ('page-title-updated', (_, title) => {
-    const idx = views.findIndex( v = >  v.view ===view);
-    if (idx !==  -1 ){
-        mainWindow.webContens.send('tab-updated', {index: idx, title});
+// 🔹 Función para crear la ventana principal
+function createWindow() {
+  mainWindow = new BrowserWindow({
+    width: 1200,
+    height: 800,
+    webPreferences: {
+      preload: path.join(__dirname, 'preload.js'), // script intermedio
+      contextIsolation: true, // aisla el contexto por seguridad
+      nodeIntegration: false, // desactiva node en el renderer
+      sandbox: true // habilita sandbox
     }
-});
+  });
 
-//activa la pestana creada 
-switchTab(views.length -1);
-return views.length -1 ; // devuelve el indice de la nueva pestana
+  mainWindow.loadFile(path.join(__dirname, 'renderer', 'index.html'));
+
+  mainWindow.on('closed', () => {
+    mainWindow = null;
+  });
 }
 
-// cambia a la pestana indicada por indice
-function switchTab(index){
-    if (index < 0 || index >= views.length) return; // indice invalido
-    // primero escondemos todos los browserViews
-    views.forEach((v , i ) => {
-        mainWindow.removeBrowserView(v.view);
-    });
-
-   // luego añadimos solo la pestaña activa  
-   const active  = views[index].view;
-   mainWindowa.addBrowserView(active);
-   const [w, h] = mainWindow.getContentSize();
-   active.setBounds({x: 0, y:40. ,width: w , height: h -40});
-   active.setAutoResize({width:true, height:true});
-
-   activeIndex = index; //actualiza indice activo 
-
-   // notificamos al renderer  cual esta activa 
-   mainWindow.webContens.send('active-tab', {index: activeIndex, url: views[index].url});
-}
- 
-// Cierra una pestana 
-function closeTab(index){
-    if (index < 0  || index  >=  views.length) return; 
-    const item = views [index];
-    mainWindow.removeBrowserView(item.view); // remueve la lista de vistas 
-    item.view.webContents.destroy(); // libera recursos
-    views.splice(index, 1);  // remueve del array 
-    // ajusta  active Index
-    if (views .length  === 0 ) { 
-        activeIndex = -1 ; 
-    } else { 
-        const next  = Math.max(0, index - 1 );
-        switchTab(next);
+// 🔹 Función para crear una nueva pestaña
+function createTab(url = 'https://www.google.com') {
+  const view = new BrowserView({
+    webPreferences: {
+      nodeIntegration: false,
+      contextIsolation: true,
+      sandbox: true
     }
-    // notificamos cambios al renderer
-    mainWindow.webContens.send ('tab-changed ' , {count : views. length });
+  });
+
+  // Guarda metadatos de la pestaña
+  views.push({ view, url });
+
+  // Añade la vista a la ventana principal
+  mainWindow.addBrowserView(view);
+
+  // Define el tamaño y posición (40px reservados para barra superior)
+  const [w, h] = mainWindow.getContentSize();
+  view.setBounds({ x: 0, y: 40, width: w, height: h - 40 });
+  view.setAutoResize({ width: true, height: true });
+
+  // Carga la URL inicial
+  view.webContents.loadURL(url);
+
+  // Cuando cambia la URL
+  view.webContents.on('did-navigate-in-page', (event, newURL) => {
+    const idx = views.findIndex(v => v.view === view);
+    if (idx !== -1) {
+      views[idx].url = newURL;
+      mainWindow.webContents.send('tab-updated', { index: idx, url: newURL });
+      DB.addHistory(newURL);
+    }
+  });
+
+  // Cuando cambia el título
+  view.webContents.on('page-title-updated', (_, title) => {
+    const idx = views.findIndex(v => v.view === view);
+    if (idx !== -1) {
+      mainWindow.webContents.send('tab-updated', { index: idx, title });
+    }
+  });
+
+  // Activa la nueva pestaña
+  switchTab(views.length - 1);
+  return views.length - 1;
 }
 
-// IPC handlers - recibe mensajes del renderer  y actua 
- ipcMain.handle('create-tab',  (_, url ) =>  {
-    return createTab(url); // devuelve indice  al renderer 
- });
- ipcMain.handle('switch-tab', (_,index) => {
-    switchTab(index);
- });
+// 🔹 Cambia a la pestaña indicada
+function switchTab(index) {
+  if (index < 0 || index >= views.length) return;
 
- ipcMain.handle('close-tab', (_, index) => {
-    closeTab(index);
- });
+  // Oculta todas las vistas
+  views.forEach(v => {
+    mainWindow.removeBrowserView(v.view);
+  });
 
-ipcMain.handle('navigate', (_,url) => {
+  // Muestra solo la activa
+  const active = views[index].view;
+  mainWindow.addBrowserView(active);
+  const [w, h] = mainWindow.getContentSize();
+  active.setBounds({ x: 0, y: 40, width: w, height: h - 40 });
+  active.setAutoResize({ width: true, height: true });
+
+  activeIndex = index;
+  mainWindow.webContents.send('active-tab', { index: activeIndex, url: views[index].url });
+}
+
+// 🔹 Cierra una pestaña
+function closeTab(index) {
+  if (index < 0 || index >= views.length) return;
+
+  const item = views[index];
+  mainWindow.removeBrowserView(item.view);
+  item.view.webContents.destroy();
+  views.splice(index, 1);
+
+  if (views.length === 0) {
+    activeIndex = -1;
+  } else {
+    const next = Math.max(0, index - 1);
+    switchTab(next);
+  }
+
+  mainWindow.webContents.send('tab-changed', { count: views.length });
+}
+
+// 🔹 IPC Handlers (mensajes desde el renderer)
+ipcMain.handle('create-tab', (_, url) => createTab(url));
+ipcMain.handle('switch-tab', (_, index) => switchTab(index));
+ipcMain.handle('close-tab', (_, index) => closeTab(index));
+ipcMain.handle('navigate', (_, url) => {
+  if (activeIndex >= 0 && activeIndex < views.length) {
+    views[activeIndex].view.webContents.loadURL(url);
     return true;
- }
- return false;
+  }
+  return false;
+});
+ipcMain.handle('get-tabs', () => {
+  return views.map((v, i) => ({ index: i, url: v.url }));
 });
 
+// 🔹 Inicializa app
+app.whenReady().then(() => {
+  DB.init();
+  createWindow();
+  createTab('https://www.google.com');
 
- ipcMain.handle('get-tabs', () = > {
- // devuelve  info basica  de pestanas al renderer 
- return views.map ((v, i ) =>  ({ index: i, url: v.url }));
- });
- // inicializa DB y crea  ventana  cuando la app esta lista 
- app.whenReady ().then()( ) => {
-    DB.init ();  // inicializa la base de datos sqlite 
-    createWindow(); // crea la ventana principal
-
-    // creamos una pestana  por  defecto  al inicio 
-    createTab ('htpps://www.google.com');
-    
-
-    // en MacOS  se crea  ventana  si no hay  niguna  y la app  vuelve  activarse 
-    app.on('activate' , () => {
-         if (BrowserWindow.getAllWindows().length === 0 )  createWindow();
-    });
+  app.on('activate', () => {
+    if (BrowserWindow.getAllWindows().length === 0) createWindow();
+  });
 });
 
-// cuando cierran  todas las ventanas , salir (excepto en MacOS )
-app.on(process.platform !== 'darwin' )  app.quit();
+// 🔹 Salida de la app
+app.on('window-all-closed', () => {
+  if (process.platform !== 'darwin') app.quit();
+});
