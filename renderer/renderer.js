@@ -76,4 +76,11 @@ window.navixAPI.on('tabs-changed', (data) =>  {
         renderTabs(); 
     });
  });
+
+ // al cargar la UI  pedimos  la lista  de pestanas  al main 
+ window.addEventListener('DOMContentLoaded', async () => {
+    const list =  await  window.navixAPI.getTabs();
+    tabs = list;
+    renderTabs();
+ });
  
