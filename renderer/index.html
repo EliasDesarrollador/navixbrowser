@@ -1,30 +1,53 @@
-<!-- renderer/index.html - interfaz principal -->
+<!-- renderer/index.html - Interfaz principal de Navix -->
 <!doctype html>
-<html>
+<html lang="es">
 <head>
   <meta charset="utf-8" />
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self' https: data:;">
+  <!-- Política de seguridad: solo recursos locales y HTTPS -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self' https: data:;" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Navix</title>
-  <link rel="stylesheet" href="styles.css">
+
+  <title>Navix Browser</title>
+
+  <!-- Estilos -->
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <!-- Barra superior: botones y barra de direcciones -->
+
+  <!-- Barra superior de navegación -->
   <div id="topbar">
-    <button id="btn-new">+ pestaña</button>
-    <input id="address" placeholder="Ingresá una URL y Enter" />
-    <button id="btn-go">Ir</button>
+    <!-- Botones de control -->
+    <div id="nav-buttons">
+      <button id="btn-back" title="Atrás">⟨</button>
+      <button id="btn-forward" title="Adelante">⟩</button>
+      <button id="btn-reload" title="Recargar">⟳</button>
+    </div>
+
+    <!-- Barra de dirección -->
+    <input 
+      id="address" 
+      type="text" 
+      placeholder="Escribí una URL o buscá en la web y presioná Enter..." 
+    />
+
+    <!-- Botones de pestañas -->
+    <div id="tab-buttons">
+      <button id="btn-new-tab" title="Nueva pestaña">＋</button>
+      <button id="btn-close-tab" title="Cerrar pestaña">✕</button>
+    </div>
   </div>
 
-  <!-- Titulo con pestañas -->
+  <!-- Área de pestañas (nombres de las páginas abiertas) -->
   <div id="tabs"></div>
 
-  <!-- Área de contenido se gestiona por BrowserView en main, aquí sólo control visual -->
+  <!-- Zona de contenido: controlada por BrowserView desde main.js -->
   <div id="content-placeholder">
-    <!-- Contenido real se renderiza en BrowserView que crea main.js -->
-    <p class="hint">La página web se muestra en el área debajo. Usá la barra para navegar.</p>
+    <p class="hint">🌀 Bienvenido a Navix Browser</p>
+    <p class="subhint">Usá la barra superior para navegar por la web.</p>
   </div>
 
+  <!-- Script principal del renderer -->
   <script src="renderer.js"></script>
+
 </body>
 </html>
