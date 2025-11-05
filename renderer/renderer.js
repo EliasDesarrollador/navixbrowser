@@ -68,4 +68,12 @@ window.navixAPI.on('tabs-changed', (data) =>  {
     // actualiza  el input  con la URL actual 
     address.value = data.url || ' ' ;
  });
+
+ window.navixAPI.on('tab-updated', (data) => {
+    // recibe actualizacionies de  titulo/url  de una  pestana 
+    window.navixAPI.getTabs().then(list => {
+        tabs = list;
+        renderTabs(); 
+    });
+ });
  
