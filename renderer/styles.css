@@ -1,9 +1,138 @@
 
-/* styles.css */
-body { margin: 0; font-family: Arial, sans-serif; background: #fafafa; }
-#topbar { height: 40px; display:flex; gap:8px; align-items:center; padding:6px; background:#1a1a1a; color:white; }
-#topbar input { flex:1; padding:6px; border-radius:4px; border:1px solid #ccc; }
-#tabs { display:flex; gap:6px; padding:6px; background:#f0f0f0; overflow:auto; }
-#tabs button { padding:6px 10px; border-radius:6px; border:1px solid #ccc; background:white; cursor:pointer; }
-#content-placeholder { padding:16px; }
-.hint { color:#555; }
+/* ============================================================
+   NAVIX BROWSER - Estilos base
+   ============================================================ */
+
+/* Reset básico */
+body {
+  margin: 0;
+  font-family: "Segoe UI", Arial, sans-serif;
+  background: #121212; /* Fondo oscuro */
+  color: #f5f5f5;
+  height: 100vh;
+  overflow: hidden; /* Evita scroll general */
+}
+
+/* ------------------------------------------------------------
+   Barra superior (topbar)
+   ------------------------------------------------------------ */
+#topbar {
+  height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 0 8px;
+  background: #1e1e1e;
+  border-bottom: 1px solid #2c2c2c;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* ------------------------------------------------------------
+   Grupo de botones de navegación (atrás, adelante, recargar)
+   ------------------------------------------------------------ */
+#nav-buttons button {
+  background: transparent;
+  border: none;
+  color: #f5f5f5;
+  font-size: 18px;
+  cursor: pointer;
+  padding: 4px 8px;
+  transition: background 0.2s ease;
+}
+#nav-buttons button:hover {
+  background: #2e2e2e;
+  border-radius: 6px;
+}
+
+/* ------------------------------------------------------------
+   Barra de dirección (input)
+   ------------------------------------------------------------ */
+#address {
+  flex: 1;
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: 1px solid #3a3a3a;
+  background: #2a2a2a;
+  color: #f5f5f5;
+  outline: none;
+  font-size: 14px;
+}
+#address:focus {
+  border-color: #4f8ef7;
+  background: #242424;
+}
+
+/* ------------------------------------------------------------
+   Botones de pestañas (nueva y cerrar)
+   ------------------------------------------------------------ */
+#tab-buttons button {
+  background: transparent;
+  border: none;
+  color: #f5f5f5;
+  font-size: 16px;
+  padding: 4px 8px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+#tab-buttons button:hover {
+  background: #2e2e2e;
+  border-radius: 6px;
+}
+
+/* ------------------------------------------------------------
+   Contenedor de pestañas
+   ------------------------------------------------------------ */
+#tabs {
+  display: flex;
+  gap: 6px;
+  padding: 6px;
+  background: #1a1a1a;
+  border-bottom: 1px solid #2b2b2b;
+  overflow-x: auto;
+}
+#tabs button {
+  padding: 6px 12px;
+  border-radius: 6px;
+  border: none;
+  background: #2a2a2a;
+  color: #ccc;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+#tabs button:hover {
+  background: #3a3a3a;
+  color: #fff;
+}
+#tabs button.active {
+  background: #4f8ef7;
+  color: #fff;
+}
+
+/* ------------------------------------------------------------
+   Área de contenido (mientras no se usa BrowserView)
+   ------------------------------------------------------------ */
+#content-placeholder {
+  padding: 32px;
+  text-align: center;
+}
+.hint {
+  font-size: 18px;
+  color: #aaa;
+}
+.subhint {
+  font-size: 14px;
+  color: #777;
+}
+
+/* Scrollbar moderno para pestañas */
+#tabs::-webkit-scrollbar {
+  height: 6px;
+}
+#tabs::-webkit-scrollbar-thumb {
+  background: #444;
+  border-radius: 4px;
+}
+#tabs::-webkit-scrollbar-thumb:hover {
+  background: #666;
+}
