@@ -1,7 +1,6 @@
 
 // preload.js - se ejecuta antes que el renderer, con contexto aislado (sandbox)
 const { contextBridge, ipcRenderer } = require('electron'); 
-//   Había un espacio extra después de 'electron ' en tu código original
 
 contextBridge.exposeInMainWorld('navixAPI', {
     // Crear una nueva pestaña en el proceso principal
