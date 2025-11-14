@@ -1,8 +1,15 @@
 
+<<<<<<< HEAD
 // preload.js - se ejecuta antes que el renderer, con contexto aislado (sandbox)
 const { contextBridge, ipcRenderer } = require('electron'); 
+=======
+// preload.js - se ejecuta antes que el renderer (interfaz) y expone una API segura.
+const { contextBridge, ipcRenderer } = require('electron');
+>>>>>>> 6f0844bb4a61c8d47078b6b39d4bf8c9f78163b2
 
+// Exponemos funciones seguras en el objeto global window.navixAPI
 contextBridge.exposeInMainWorld('navixAPI', {
+
     // Crear una nueva pestaña en el proceso principal
     createTab: (url) => ipcRenderer.invoke('create-tab', url),
 
@@ -15,9 +22,18 @@ contextBridge.exposeInMainWorld('navixAPI', {
     // Navegar la pestaña activa a una nueva URL
     navigate: (url) => ipcRenderer.invoke('navigate', url),
 
-    // Obtener la lista completa de pestañas
+    // Ir hacia atrás en la pestaña activa
+    back: () => ipcRenderer.invoke('back'),
+
+    // Ir hacia adelante en la pestaña activa
+    forward: () => ipcRenderer.invoke('forward'),
+
+    // Recargar la pestaña activa
+    reload: () => ipcRenderer.invoke('reload'),
+
+    // Obtener la lista de pestañas activas
     getTabs: () => ipcRenderer.invoke('get-tabs'),
 
-    // Escuchar eventos enviados desde el proceso principal
+    // Escuchar eventos que vienen desde el proceso principal (main.js)
     on: (channel, listener) => ipcRenderer.on(channel, (_, data) => listener(data))
 });

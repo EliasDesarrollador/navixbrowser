@@ -129,6 +129,26 @@ ipcMain.handle('get-tabs', () => {
   return views.map((v, i) => ({ index: i, url: v.url }));
 });
 
+// 🔹 Navegación: atrás, adelante, recargar
+ipcMain.handle('back', () => {
+  if (activeIndex >= 0 && activeIndex < views.length) {
+    views[activeIndex].view.webContents.goBack();
+  }
+});
+
+ipcMain.handle('forward', () => {
+  if (activeIndex >= 0 && activeIndex < views.length) {
+    views[activeIndex].view.webContents.goForward();
+  }
+});
+
+ipcMain.handle('reload', () => {
+  if (activeIndex >= 0 && activeIndex < views.length) {
+    views[activeIndex].view.webContents.reload();
+  }
+});
+
+
 // 🔹 Inicializa app
 app.whenReady().then(() => {
   DB.init();
