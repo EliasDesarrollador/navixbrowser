@@ -79,7 +79,7 @@ btnForward.addEventListener('click', goForward);
 btnReload.addEventListener('click', reloadPage);
 
 // Escucha eventos desde el main
-window.navixAPI.on('tabs-changed', async () => {
+window.navixAPI.on('tab-changed', async () => {
   const list = await window.navixAPI.getTabs();
   tabs = list;
   renderTabs();
