@@ -10,31 +10,27 @@
   <title>Navix Browser</title>
 
   <!-- Estilos -->
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
 
   <!-- Barra superior de navegación -->
-<div id="topbar">
-  <button id="btn-new">+ pestaña</button>
-  <button id="btn-back"><---</button>
-  <button id="btn-forward">---></button>
-  <button id="btn-reload">🔄</button>
-  <input id="address" placeholder="Ingresá una URL y Enter" />
-  <button id="btn-go">Ir</button>
-</div>
-
-    <!-- Barra de dirección -->
+  <div id="topbar">
+    <div id="logo">⛵ Navix</div>
+    <div id="nav-buttons">
+      <button id="btn-back" title="Atrás">⟵</button>
+      <button id="btn-forward" title="Adelante">⟶</button>
+      <button id="btn-reload" title="Recargar">⟳</button>
+    </div>
     <input 
       id="address" 
       type="text" 
       placeholder="Escribí una URL o buscá en la web y presioná Enter..." 
+      autocomplete="off"
     />
-
-    <!-- Botones de pestañas -->
-    <div id="tab-buttons">
-      <button id="btn-new-tab" title="Nueva pestaña">＋</button>
-      <button id="btn-close-tab" title="Cerrar pestaña">✕</button>
+    <div id="top-actions">
+      <button id="btn-go" title="Ir">Ir</button>
+      <button id="btn-new" title="Nueva pestaña">＋</button>
     </div>
   </div>
 
